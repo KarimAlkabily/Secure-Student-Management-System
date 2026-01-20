@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Grades - Secure Student Records{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="text-xl font-bold text-gray-900">Secure Records</a>
+                    </div>
+                    <div class="hidden md:ml-10 md:flex md:space-x-4">
+                        <a href="/dashboard"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                        <a href="/students"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Students</a>
+                        <a href="/grades"
+                            class="text-indigo-600 border-b-2 border-indigo-600 px-3 py-2 text-sm font-medium">Grades</a>
+                        <a href="/courses"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Courses</a>
+                        <a href="/attendance"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Attendance</a>
+                        <a href="/role-requests"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Role Requests</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="/logout" class="text-gray-700 hover:text-red-600 px-3 py-2 text-sm font-medium">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <!-- Header -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Grades</h1>
+                    <p class="mt-1 text-sm text-gray-500">View and manage student grades</p>
+                </div>
+                <button onclick="openAddModal()"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Enter Grade
+                </button>
+            </div>
+
+            <!-- Grades Table -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Course</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Student</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Grade</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Entered By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTable" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading grades...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Grade Modal -->
+    <div id="addModal" class="hidden fixed z-50 inset-0 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeAddModal()"></div>
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form onsubmit="handleAddGrade(event)">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Enter New Grade</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Student ID</label>
+                                <input type="number" id="student_id" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Course ID</label>
+                                <input type="number" id="course_id" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Grade</label>
+                                <input type="number" step="0.01" min="0" max="100" id="grade" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">Submit</button>
+                        <button type="button" onclick="closeAddModal()"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', loadGrades);
+
+    async function loadGrades() {
+        try {
+            const grades = await apiCall('/api/grades');
+            const tbody = document.getElementById('gradesTable');
+            if (grades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No grades found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = grades.map(g => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${g.course_name || g.course || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${g.student_name || g.student_id || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${g.grade >= 60 ? 'text-green-600' : 'text-red-600'}">${g.grade.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${g.date || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${g.entered_by || 'N/A'}</td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            showNotification('Error loading grades: ' + error.message, 'error');
+        }
+    }
+
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+    }
+
+    async function handleAddGrade(event) {
+        event.preventDefault();
+        const data = {
+            student_id: parseInt(document.getElementById('student_id').value),
+            course_id: parseInt(document.getElementById('course_id').value),
+            grade: parseFloat(document.getElementById('grade').value)
+        };
+        try {
+            const result = await apiCall('/api/grades', 'POST', data);
+            if (result.success) {
+                showNotification('Grade entered successfully', 'success');
+                closeAddModal();
+                document.getElementById('student_id').value = '';
+                document.getElementById('course_id').value = '';
+                document.getElementById('grade').value = '';
+                loadGrades();
+            } else {
+                showNotification(result.message || 'Failed to enter grade', 'error');
+            }
+        } catch (error) {
+            showNotification('Error: ' + error.message, 'error');
+        }
+    }
+</script>
+{% endblock %}

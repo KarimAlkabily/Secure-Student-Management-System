@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Role Requests - Secure Student Records{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="text-xl font-bold text-gray-900">Secure Records</a>
+                    </div>
+                    <div class="hidden md:ml-10 md:flex md:space-x-4">
+                        <a href="/dashboard"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                        <a href="/students"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Students</a>
+                        <a href="/grades"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Grades</a>
+                        <a href="/courses"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Courses</a>
+                        <a href="/attendance"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Attendance</a>
+                        <a href="/role-requests"
+                            class="text-indigo-600 border-b-2 border-indigo-600 px-3 py-2 text-sm font-medium">Role
+                            Requests</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="/logout" class="text-gray-700 hover:text-red-600 px-3 py-2 text-sm font-medium">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <!-- Header -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Role Requests</h1>
+                    <p class="mt-1 text-sm text-gray-500">Request and manage role changes</p>
+                </div>
+                <button onclick="openAddModal()"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    New Request
+                </button>
+            </div>
+
+            <!-- Role Requests Table -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Username</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Current Role</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Requested Role</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Reason</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTable" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">Loading requests...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Request Modal -->
+    <div id="addModal" class="hidden fixed z-50 inset-0 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeAddModal()"></div>
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form onsubmit="handleAddRequest(event)">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">New Role Request</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Requested Role</label>
+                                <select id="requested_role" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">Select a role</option>
+                                    <option value="Student">Student</option>
+                                    <option value="TA">Teaching Assistant (TA)</option>
+                                    <option value="Instructor">Instructor</option>
+                                    <option value="Admin">Administrator</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Reason</label>
+                                <textarea id="reason" required rows="4"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Explain why you need this role..."></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Comments (Optional)</label>
+                                <textarea id="comments" rows="3"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Additional comments..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">Submit
+                            Request</button>
+                        <button type="button" onclick="closeAddModal()"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<body data-is-admin="{{ '1' if is_admin else '0' }}"></body>
+<script>
+    const isAdmin = document.body.dataset.isAdmin === '1';
+
+    window.addEventListener('DOMContentLoaded', () => {
+        loadRequests();
+    });
+
+    async function loadRequests() {
+        try {
+            const requests = await apiCall('/api/role-requests');
+            const tbody = document.getElementById('requestsTable');
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">No role requests found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = requests.map(r => {
+                const statusColors = {
+                    'Pending': 'bg-yellow-100 text-yellow-800',
+                    'Approved': 'bg-green-100 text-green-800',
+                    'Denied': 'bg-red-100 text-red-800'
+                };
+                const statusColor = statusColors[r.status] || 'bg-gray-100 text-gray-800';
+                const canApprove = r.status === 'Pending' && isAdmin;
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${r.username || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${r.current_role || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${r.requested_role || 'N/A'}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${r.reason ? (r.reason.length > 50 ? r.reason.substring(0, 50) + '...' : r.reason) : 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor}">
+                                ${r.status || 'Pending'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${r.date || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            ${canApprove ? `
+                                <button onclick="processRequest(${r.id}, 'approve')" class="text-green-600 hover:text-green-900 mr-3">Approve</button>
+                                <button onclick="processRequest(${r.id}, 'deny')" class="text-red-600 hover:text-red-900">Deny</button>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            showNotification('Error loading requests: ' + error.message, 'error');
+        }
+    }
+
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+    }
+
+    async function handleAddRequest(event) {
+        event.preventDefault();
+        const data = {
+            requested_role: document.getElementById('requested_role').value,
+            reason: document.getElementById('reason').value,
+            comments: document.getElementById('comments').value
+        };
+        try {
+            const result = await apiCall('/api/role-requests', 'POST', data);
+            if (result.success) {
+                showNotification('Role request submitted successfully', 'success');
+                closeAddModal();
+                document.getElementById('requested_role').value = '';
+                document.getElementById('reason').value = '';
+                document.getElementById('comments').value = '';
+                loadRequests();
+            } else {
+                showNotification(result.message || 'Failed to submit request', 'error');
+            }
+        } catch (error) {
+            showNotification('Error: ' + error.message, 'error');
+        }
+    }
+
+    async function processRequest(requestId, action) {
+        if (!confirm(`Are you sure you want to ${action} this request?`)) return;
+        try {
+            const result = await apiCall(`/api/role-requests/${requestId}/${action}`, 'POST');
+            if (result.success) {
+                showNotification(`Request ${action}d successfully`, 'success');
+                loadRequests();
+            } else {
+                showNotification(result.message || `Failed to ${action} request`, 'error');
+            }
+        } catch (error) {
+            showNotification('Error: ' + error.message, 'error');
+        }
+    }
+</script>
+{% endblock %}

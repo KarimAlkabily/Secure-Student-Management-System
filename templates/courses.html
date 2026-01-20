@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Courses - Secure Student Records{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="text-xl font-bold text-gray-900">Secure Records</a>
+                    </div>
+                    <div class="hidden md:ml-10 md:flex md:space-x-4">
+                        <a href="/dashboard"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                        <a href="/students"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Students</a>
+                        <a href="/grades"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Grades</a>
+                        <a href="/courses"
+                            class="text-indigo-600 border-b-2 border-indigo-600 px-3 py-2 text-sm font-medium">Courses</a>
+                        <a href="/attendance"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Attendance</a>
+                        <a href="/role-requests"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Role Requests</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="/logout" class="text-gray-700 hover:text-red-600 px-3 py-2 text-sm font-medium">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold text-gray-900">Courses</h1>
+                <p class="mt-1 text-sm text-gray-500">View available courses and their details</p>
+            </div>
+
+            <!-- Courses Grid -->
+            <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <p class="text-gray-500">Loading courses...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', loadCourses);
+
+    async function loadCourses() {
+        try {
+            const courses = await apiCall('/api/courses');
+            const container = document.getElementById('coursesContainer');
+            if (courses.length === 0) {
+                container.innerHTML = '<div class="col-span-full bg-white rounded-lg shadow p-6 text-center"><p class="text-gray-500">No courses found</p></div>';
+                return;
+            }
+            container.innerHTML = courses.map(c => `
+                <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">${c.name || 'N/A'}</h3>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">ID: ${c.id}</span>
+                    </div>
+                    ${c.description ? `<p class="text-sm text-gray-600 mb-4">${c.description}</p>` : ''}
+                    ${c.instructor_id ? `<p class="text-xs text-gray-500">Instructor ID: ${c.instructor_id}</p>` : ''}
+                </div>
+            `).join('');
+        } catch (error) {
+            showNotification('Error loading courses: ' + error.message, 'error');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Secure Student Records{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold text-gray-900">Secure Records</span>
+                    </div>
+                    <div class="hidden md:ml-10 md:flex md:space-x-4">
+                        <a href="/dashboard"
+                            class="text-indigo-600 border-b-2 border-indigo-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                        <a href="/students"
+                            class="text-gray-700 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-600 px-3 py-2 text-sm font-medium transition-colors">Students</a>
+                        <a href="/grades"
+                            class="text-gray-700 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-600 px-3 py-2 text-sm font-medium transition-colors">Grades</a>
+                        <a href="/courses"
+                            class="text-gray-700 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-600 px-3 py-2 text-sm font-medium transition-colors">Courses</a>
+                        <a href="/attendance"
+                            class="text-gray-700 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-600 px-3 py-2 text-sm font-medium transition-colors">Attendance</a>
+                        {% if role == 'Admin' %}
+                        <a href="/users"
+                            class="text-gray-700 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-600 px-3 py-2 text-sm font-medium transition-colors">Users</a>
+                        {% endif %}
+                        <a href="/role-requests"
+                            class="text-gray-700 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-600 px-3 py-2 text-sm font-medium transition-colors">Role
+                            Requests</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-medium text-gray-900">{{ username }}</p>
+                        <p class="text-xs text-gray-500">{{ role }} • Clearance: {{ clearance }}</p>
+                    </div>
+                    <a href="/logout"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="px-4 py-6 sm:px-0">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg p-8 text-white mb-8">
+                <h1 class="text-3xl font-bold mb-2">Welcome, {{ username }}!</h1>
+                <p class="text-indigo-100">You are logged in as <span class="font-semibold">{{ role }}</span> with
+                    clearance level <span class="font-semibold">{{ clearance }}</span></p>
+            </div>
+
+            <!-- Quick Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Students</dt>
+                                    <dd class="text-lg font-semibold text-gray-900">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-5 py-3">
+                        <div class="text-sm">
+                            <a href="/students" class="font-medium text-indigo-600 hover:text-indigo-900">View all →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Grades</dt>
+                                    <dd class="text-lg font-semibold text-gray-900">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-5 py-3">
+                        <div class="text-sm">
+                            <a href="/grades" class="font-medium text-indigo-600 hover:text-indigo-900">View all →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-purple-500 rounded-md p-3">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Courses</dt>
+                                    <dd class="text-lg font-semibold text-gray-900">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-5 py-3">
+                        <div class="text-sm">
+                            <a href="/courses" class="font-medium text-indigo-600 hover:text-indigo-900">View all →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Attendance</dt>
+                                    <dd class="text-lg font-semibold text-gray-900">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-5 py-3">
+                        <div class="text-sm">
+                            <a href="/attendance" class="font-medium text-indigo-600 hover:text-indigo-900">View all
+                                →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions - Different content based on role -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                {% if role == 'Admin' %}
+                <!-- Admin Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="/users"
+                        class="flex items-center p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                        <svg class="h-8 w-8 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Manage Users</p>
+                            <p class="text-sm text-gray-500">Create and manage user accounts</p>
+                        </div>
+                    </a>
+                    <a href="/students"
+                        class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                        <svg class="h-8 w-8 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Manage Students</p>
+                            <p class="text-sm text-gray-500">View and manage all student records</p>
+                        </div>
+                    </a>
+                    <a href="/role-requests"
+                        class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                        <svg class="h-8 w-8 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Role Requests</p>
+                            <p class="text-sm text-gray-500">Review and approve role change requests</p>
+                        </div>
+                    </a>
+                </div>
+                {% elif role == 'Student' %}
+                <!-- Student Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/grades"
+                        class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <svg class="h-8 w-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">View My Grades</p>
+                            <p class="text-sm text-gray-500">Check your grades and academic progress</p>
+                        </div>
+                    </a>
+                    <a href="/attendance"
+                        class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                        <svg class="h-8 w-8 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">My Attendance</p>
+                            <p class="text-sm text-gray-500">View your attendance records</p>
+                        </div>
+                    </a>
+                </div>
+                {% elif role == 'TA' %}
+                <!-- TA Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="/students"
+                        class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                        <svg class="h-8 w-8 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Manage Students</p>
+                            <p class="text-sm text-gray-500">View and manage assigned students</p>
+                        </div>
+                    </a>
+                    <a href="/attendance"
+                        class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                        <svg class="h-8 w-8 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Track Attendance</p>
+                            <p class="text-sm text-gray-500">Record attendance for assigned courses</p>
+                        </div>
+                    </a>
+                    <a href="/grades"
+                        class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <svg class="h-8 w-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">View Grades</p>
+                            <p class="text-sm text-gray-500">View grades for assigned courses</p>
+                        </div>
+                    </a>
+                </div>
+                {% elif role == 'Instructor' %}
+                <!-- Instructor Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="/students"
+                        class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                        <svg class="h-8 w-8 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Manage Students</p>
+                            <p class="text-sm text-gray-500">View and manage student records</p>
+                        </div>
+                    </a>
+                    <a href="/grades"
+                        class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <svg class="h-8 w-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Enter Grades</p>
+                            <p class="text-sm text-gray-500">Record student grades</p>
+                        </div>
+                    </a>
+                    <a href="/attendance"
+                        class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                        <svg class="h-8 w-8 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Track Attendance</p>
+                            <p class="text-sm text-gray-500">Record attendance records</p>
+                        </div>
+                    </a>
+                </div>
+                {% else %}
+                <!-- Default Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="/students"
+                        class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                        <svg class="h-8 w-8 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Manage Students</p>
+                            <p class="text-sm text-gray-500">View and manage student records</p>
+                        </div>
+                    </a>
+                    <a href="/grades"
+                        class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <svg class="h-8 w-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                            </path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Enter Grades</p>
+                            <p class="text-sm text-gray-500">Record student grades</p>
+                        </div>
+                    </a>
+                    <a href="/attendance"
+                        class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                        <svg class="h-8 w-8 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <p class="font-medium text-gray-900">Track Attendance</p>
+                            <p class="text-sm text-gray-500">Record attendance records</p>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
