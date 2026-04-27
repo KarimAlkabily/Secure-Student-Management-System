@@ -116,10 +116,4 @@ Open `http://127.0.0.1:5000` in your browser.
 
 **Karim Mohamed** — Secure Student Records Project
 
----
 
-If you want, I can now:
-
-* Add badges and screenshots to this README.
-* Include SQL scripts into the repo and update the README with schema & instructions.
-* Generate a polished `requirements.txt` and `.gitignore` if you don't have them yet.
